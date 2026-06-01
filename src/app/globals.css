@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bordeaux-950: #1a0810;
+  --color-bordeaux-900: #2d1520;
+  --color-bordeaux-800: #4a1e2c;
+  --color-bordeaux-700: #5e2230;
+  --color-bordeaux-600: #722F37;
+  --color-bordeaux-500: #8b3d47;
+  --color-bordeaux-400: #a85060;
+  --color-bordeaux-300: #c47080;
+  --color-bordeaux-200: #dfa0ac;
+  --color-bordeaux-100: #f0d0d5;
+  --color-bordeaux-50: #faf0f2;
+  --color-gold: #c9a227;
+  --color-gold-light: #e8c96a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1a0810;
+  color: #f5f0f0;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #2d1520;
+}
+::-webkit-scrollbar-thumb {
+  background: #722F37;
+  border-radius: 3px;
+}
+
+/* Animations */
+@keyframes pulse-alarm {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes slide-in {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.alarm-pulse {
+  animation: pulse-alarm 1s ease-in-out infinite;
+}
+
+.slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}

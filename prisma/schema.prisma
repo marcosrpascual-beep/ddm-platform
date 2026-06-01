@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String
+  password       String
+  role           String   @default("EMPLOYEE")
+  phone          String?
+  whatsappApiKey String?
+  isActive       Boolean  @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  assignments    TaskAssignment[]
+  createdTasks   Task[]           @relation("CreatedBy")
+  managedClients Client[]         @relation("ClientDDM")
+}
+
+model Task {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  priority      String   @default("MEDIUM")
+  durationDays  Int      @default(0)
+  durationHours Int      @default(0)
+  deadline      DateTime
+  createdById   String
+  notified50    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  createdBy   User             @relation("CreatedBy", fields: [createdById], references: [id])
+  assignments TaskAssignment[]
+}
+
+model TaskAssignment {
+  id          String    @id @default(cuid())
+  taskId      String
+  userId      String
+  completedAt DateTime?
+  alarmed20   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+}
+
+model Client {
+  id              String    @id @default(cuid())
+  name            String
+  isActive        Boolean   @default(true)
+  leftService     Boolean   @default(false)
+  followersStart  Int?
+  country         String?
+  startDate       DateTime?
+  endDate         DateTime?
+  instagramUrl    String?
+  tiktokUrl       String?
+  contentSheetUrl String?
+  scriptDocUrl    String?
+  notes             String?
+  source            String?
+  notifiedExpiry    Boolean   @default(false)
+  ddmUserId         String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  ddmUser   User?             @relation("ClientDDM", fields: [ddmUserId], references: [id], onDelete: SetNull)
+  renewals  ClientRenewal[]
+}
+
+model ClientRenewal {
+  id        String   @id @default(cuid())
+  clientId  String
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
